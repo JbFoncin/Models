@@ -5,17 +5,20 @@ namespace bm = boost::math ;
 namespace e = Eigen ;
 namespace TNG
 {
+    //Not used anymore, will be deleted in next update
     e::MatrixXd create_mat(long int rows, long int cols)
     {
          e::MatrixXd result = e::MatrixXd::Zero(rows, cols) ;
          return result ;
     }
+    //generates the product of variables and coefficients, then apply the dimension transform
     e::MatrixXd create_Xb(e::MatrixXd& X, e::MatrixXd& beta, long int j, long int J)
     {
         e::MatrixXd temp = X*beta ;
         e:: MatrixXd result = gen_select_mat(j, J)*temp.transpose() ;
         return result ;
     }
+    // Generates the matrix used for dimension transform
     e::MatrixXd gen_select_mat(long int j, long int J)
     {
         e::MatrixXd result = e::MatrixXd::Zero(J-1, J) ;
@@ -35,6 +38,7 @@ namespace TNG
         }
         return result ;
     }
+    //wrapper for eigen dot
     e::MatrixXd dot(e::MatrixXd& first, e::MatrixXd& second)
     {
         e::MatrixXd result = (first*second) ;
@@ -58,7 +62,7 @@ namespace TNG
     {
         return sqrt(2)*bm::erf_inv<double>(2*value-1.0) ;
     }
-
+    //Not used anymore, will be deleted
     double std_normal_density(double& x)
     {
         double result = 1.0/(sqrt(2.0 * 3.141592)) * exp(-(x*x)/2.0);
@@ -72,7 +76,7 @@ namespace TNG
         }
 
     }
-
+    //Please note the extreme values are bound to avoid NaNs
     double std_normal_cdf(double& x)
     {
         double result = (1.0+erf(x/sqrt(2.0)))/2.0 ;
@@ -89,7 +93,6 @@ namespace TNG
             return result ;
         }
     }
-
     Truncated_normal_generator::Truncated_normal_generator() : m_gen(m_rd()),m_distrib(0.99999999, 0.00000001)
     {
 
@@ -141,6 +144,8 @@ double individual_likelihood(e::MatrixXd& X, e::MatrixXd& beta, e::MatrixXd& L_j
     double truncations[J_1] ;
     double nb_draw_f = static_cast<double>(nb_draw) ;
     double tmp, tmp2, result(0) ;
+    //tmp is a variable containing product of covariance parameter and previous samples
+    //tmp2 contains the product of cdf draws
     int i, j , k ;
     for (j = 0; j < nb_draw ; j++)
     {
